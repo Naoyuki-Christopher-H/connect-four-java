@@ -15,7 +15,6 @@ public class GameView extends JFrame
     private BoardPanel boardPanel;
     private JLabel statusLabel;
     private final int animatedColumn = -1;
-    private Timer animationTimer;
     
     public GameView(GameController controller)
     {
