@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.*;
 
 public class GameView extends JFrame
 {
@@ -15,6 +14,8 @@ public class GameView extends JFrame
     private final GameController controller;
     private BoardPanel boardPanel;
     private JLabel statusLabel;
+    private final int animatedColumn = -1;
+    private Timer animationTimer;
     
     public GameView(GameController controller)
     {
@@ -61,17 +62,16 @@ public class GameView extends JFrame
             drawBoard(g2d);
             drawDiscs(g2d);
             drawHoverIndicator(g2d);
+            drawAnimatedDisc(g2d);
         }
         
         private void drawBoard(Graphics2D g2d)
         {
-            // Clean board background
             g2d.setColor(Color.WHITE);
             g2d.fillRoundRect(0, CELL_SIZE, 
                             BOARD_WIDTH, BOARD_HEIGHT - CELL_SIZE, 
                             20, 20);
             
-            // Draw cells with subtle shadows
             for (int col = 0; col < GameModel.COLS; col++)
             {
                 for (int row = 0; row < GameModel.ROWS; row++)
@@ -79,12 +79,10 @@ public class GameView extends JFrame
                     int x = col * CELL_SIZE + CELL_SIZE/2;
                     int y = (row + 1) * CELL_SIZE + CELL_SIZE/2;
                     
-                    // Cell shadow
                     g2d.setColor(new Color(220, 220, 220));
                     g2d.fillOval(x - CELL_SIZE/3 + 2, y - CELL_SIZE/3 + 2, 
                                 CELL_SIZE*2/3, CELL_SIZE*2/3);
                     
-                    // Cell hole
                     g2d.setColor(new Color(242, 242, 247));
                     g2d.fillOval(x - CELL_SIZE/3, y - CELL_SIZE/3, 
                                 CELL_SIZE*2/3, CELL_SIZE*2/3);
@@ -116,17 +114,14 @@ public class GameView extends JFrame
             Color discColor = (player == GameModel.RED) ? 
                 new Color(255, 59, 48) : new Color(0, 122, 255);
             
-            // Disc shadow
             g2d.setColor(new Color(0, 0, 0, 20));
             g2d.fillOval(x - CELL_SIZE/3 + 2, y - CELL_SIZE/3 + 2, 
                         CELL_SIZE*2/3, CELL_SIZE*2/3);
             
-            // Main disc
             g2d.setColor(discColor);
             g2d.fillOval(x - CELL_SIZE/3, y - CELL_SIZE/3, 
                         CELL_SIZE*2/3, CELL_SIZE*2/3);
             
-            // Disc highlight
             GradientPaint highlight = new GradientPaint(
                 x, y - CELL_SIZE/6, new Color(255, 255, 255, 100),
                 x, y, new Color(255, 255, 255, 0));
@@ -144,10 +139,17 @@ public class GameView extends JFrame
                 int x = hoverColumn * CELL_SIZE + CELL_SIZE/2;
                 int y = CELL_SIZE/2;
                 
-                // Simple indicator circle
                 g2d.setColor(new Color(0, 122, 255, 100));
                 g2d.fillOval(x - CELL_SIZE/3, y - CELL_SIZE/3, 
                             CELL_SIZE*2/3, CELL_SIZE*2/3);
+            }
+        }
+        
+        private void drawAnimatedDisc(Graphics2D g2d)
+        {
+            if (animatedColumn >= 0 && animatedColumn < GameModel.COLS)
+            {
+                drawDisc(g2d, 0, animatedColumn, controller.getCurrentPlayer());
             }
         }
         
@@ -196,10 +198,26 @@ public class GameView extends JFrame
         String winnerName = (winner == GameModel.RED) ? 
             controller.getPlayer1Name() : controller.getPlayer2Name();
         statusLabel.setText(winnerName + " wins!");
+        
+        Timer closeTimer = new Timer(1000, e -> 
+        {
+            dispose();
+            new GameEndWindow(winnerName).setVisible(true);
+        });
+        closeTimer.setRepeats(false);
+        closeTimer.start();
     }
     
     public void showTie()
     {
         statusLabel.setText("Game ended in a tie");
+        
+        Timer closeTimer = new Timer(1000, e -> 
+        {
+            dispose();
+            new GameEndWindow("No one - It's a tie!").setVisible(true);
+        });
+        closeTimer.setRepeats(false);
+        closeTimer.start();
     }
 }

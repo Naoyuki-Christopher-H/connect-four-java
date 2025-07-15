@@ -21,18 +21,15 @@ public class PlayerSelectionWindow extends JFrame
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(242, 242, 247));
         
-        // Main content panel
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new GridLayout(6, 1, 10, 10));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         contentPanel.setBackground(new Color(242, 242, 247));
         
-        // Title label
         JLabel titleLabel = new JLabel("Game Setup", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SF Pro Display", Font.BOLD, 20));
         contentPanel.add(titleLabel);
         
-        // Game mode selection
         gameModeBox = new JComboBox<>(new String[]{
             "Human vs Human", 
             "Human vs Computer", 
@@ -42,22 +39,18 @@ public class PlayerSelectionWindow extends JFrame
         gameModeBox.addActionListener(this::updateDifficultyVisibility);
         contentPanel.add(createInputPanel("Game Mode:", gameModeBox));
         
-        // Player 1 field
         player1Field = createTextField("Player 1");
         contentPanel.add(createInputPanel("Player 1 Name:", player1Field));
         
-        // Player 2 field
         player2Field = createTextField("Player 2");
         contentPanel.add(createInputPanel("Player 2 Name:", player2Field));
         
-        // Difficulty dropdown (initially hidden)
         difficultyBox = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
         difficultyBox.setFont(new Font("SF Pro Text", Font.PLAIN, 14));
         difficultyPanel = createInputPanel("Computer Difficulty:", difficultyBox);
         difficultyPanel.setVisible(false);
         contentPanel.add(difficultyPanel);
         
-        // Start button
         JButton startButton = createButton("Start Game");
         startButton.addActionListener(this::startGame);
         contentPanel.add(startButton);
@@ -124,7 +117,6 @@ public class PlayerSelectionWindow extends JFrame
         boolean showDifficulty = selectedMode.contains("Computer");
         difficultyPanel.setVisible(showDifficulty);
         
-        // Update player 2 field label based on selection
         if (selectedMode.equals("Human vs Computer"))
         {
             ((JLabel)((JPanel)player2Field.getParent()).getComponent(0)).setText("Computer Name:");
