@@ -21,7 +21,10 @@ This project is a Java implementation of the classic Connect Four game, designed
 - **Technical:**
   - **Laborator:** Java, Git, GitHub Actions
 - **Installation Instructions:**
-  - **GitHub Repo:** [https://github.com/Naoyuki-Christopher-H/connect-four-java](https://github.com/Naoyuki-Christopher-H/connect-four-java)
+  - **GitHub Repo:**
+    ```
+      https://github.com/Naoyuki-Christopher-H/connect-four-java
+    ```
   - Clone the repository using Git and compile the project. Run the main class to start the game in the console.
 - **Key Features:**
   - Customizable board dimensions (rows and columns).
