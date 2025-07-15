@@ -17,7 +17,7 @@ Connect Four Java: A Java implementation of the classic Connect Four game, featu
 This project is a Java implementation of the classic Connect Four game, designed to be played in the console. The game allows for customizable board dimensions and includes features such as player turns, win detection, and a simple user interface. The project serves as an example of object-oriented programming principles in Java, including classes, methods, and control structures.
 
 - **Date of creation:** 2025-07
-- **Badges:** [![Java CI](https://github.com/Naoyuki-Christopher-H/connect-four-java/actions/workflows/java-ci.yml/badge.svg)](https://github.com/Naoyuki-Christopher-H/connect-four-java/actions/workflows/java-ci.yml)
+- **Badges:** N/A
 - **Technical:**
   - **Laborator:** Java, Git, GitHub Actions
 - **Installation Instructions:**
