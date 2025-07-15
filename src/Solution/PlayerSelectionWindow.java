@@ -6,100 +6,114 @@ import java.awt.event.*;
 
 public class PlayerSelectionWindow extends JFrame
 {
-    private final JTextField player1NameField;
-    private final JTextField player2NameField;
-    private final JComboBox<String> player1ColorBox;
-    private final JComboBox<String> player2ColorBox;
-    private final JComboBox<String> player1TypeBox;
-    private final JComboBox<String> player2TypeBox;
+    private final JTextField player1Field;
+    private final JTextField player2Field;
     private final JComboBox<String> difficultyBox;
     
     public PlayerSelectionWindow()
     {
-        setTitle("Player Setup");
-        setSize(400, 300);
+        setTitle("Connect Four Setup");
+        setSize(400, 295);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(7, 2, 10, 10));
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(new Color(242, 242, 247));
         
-        // Player 1 components
-        add(new JLabel("Player 1 Name:"));
-        player1NameField = new JTextField("Player 1");
-        add(player1NameField);
+        // Main content panel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new GridLayout(5, 1, 10, 10));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        contentPanel.setBackground(new Color(242, 242, 247));
         
-        add(new JLabel("Player 1 Color:"));
-        player1ColorBox = new JComboBox<>(new String[]{"Red", "Blue", "Green", "Yellow"});
-        add(player1ColorBox);
+        // Title label
+        JLabel titleLabel = new JLabel("Player Setup", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("SF Pro Display", Font.BOLD, 20));
+        contentPanel.add(titleLabel);
         
-        add(new JLabel("Player 1 Type:"));
-        player1TypeBox = new JComboBox<>(new String[]{"Human", "Computer"});
-        player1TypeBox.addActionListener(this::updateDifficultyVisibility);
-        add(player1TypeBox);
+        // Player 1 field
+        player1Field = createTextField("Player 1");
+        contentPanel.add(createInputPanel("Player 1:", player1Field));
         
-        // Player 2 components
-        add(new JLabel("Player 2 Name:"));
-        player2NameField = new JTextField("Player 2");
-        add(player2NameField);
+        // Player 2 field
+        player2Field = createTextField("Player 2");
+        contentPanel.add(createInputPanel("Player 2:", player2Field));
         
-        add(new JLabel("Player 2 Color:"));
-        player2ColorBox = new JComboBox<>(new String[]{"Red", "Blue", "Green", "Yellow"});
-        add(player2ColorBox);
-        
-        add(new JLabel("Player 2 Type:"));
-        player2TypeBox = new JComboBox<>(new String[]{"Human", "Computer"});
-        player2TypeBox.addActionListener(this::updateDifficultyVisibility);
-        add(player2TypeBox);
-        
-        // Difficulty level
-        add(new JLabel("Difficulty:"));
+        // Difficulty dropdown
         difficultyBox = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
-        add(difficultyBox);
-        difficultyBox.setVisible(false);
+        difficultyBox.setFont(new Font("SF Pro Text", Font.PLAIN, 14));
+        contentPanel.add(createInputPanel("Difficulty:", difficultyBox));
         
         // Start button
-        JButton startButton = new JButton("Start Game");
+        JButton startButton = createButton("Start Game");
         startButton.addActionListener(this::startGame);
-        add(startButton);
+        contentPanel.add(startButton);
         
+        add(contentPanel, BorderLayout.CENTER);
         setLocationRelativeTo(null);
     }
     
-    private void updateDifficultyVisibility(ActionEvent e)
+    private JTextField createTextField(String placeholder)
     {
-        boolean showDifficulty = player1TypeBox.getSelectedItem().equals("Computer") || 
-                               player2TypeBox.getSelectedItem().equals("Computer");
-        difficultyBox.setVisible(showDifficulty);
+        JTextField field = new JTextField(placeholder);
+        field.setFont(new Font("SF Pro Text", Font.PLAIN, 14));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(209, 209, 214), 1),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        return field;
+    }
+    
+    private JPanel createInputPanel(String labelText, JComponent field)
+    {
+        JPanel panel = new JPanel(new BorderLayout(10, 0));
+        panel.setBackground(new Color(242, 242, 247));
+        
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("SF Pro Text", Font.PLAIN, 14));
+        panel.add(label, BorderLayout.WEST);
+        
+        panel.add(field, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    private JButton createButton(String text)
+    {
+        JButton button = new JButton(text);
+        button.setFont(new Font("SF Pro Text", Font.BOLD, 14));
+        button.setBackground(new Color(0, 122, 255));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
+        // Add subtle hover effect
+        button.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseEntered(MouseEvent e)
+            {
+                button.setBackground(new Color(10, 132, 255));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e)
+            {
+                button.setBackground(new Color(0, 122, 255));
+            }
+        });
+        
+        return button;
     }
     
     private void startGame(ActionEvent e)
     {
-        String player1Name = player1NameField.getText();
-        String player2Name = player2NameField.getText();
-        String player1Color = (String)player1ColorBox.getSelectedItem();
-        String player2Color = (String)player2ColorBox.getSelectedItem();
-        boolean player1IsComputer = player1TypeBox.getSelectedItem().equals("Computer");
-        boolean player2IsComputer = player2TypeBox.getSelectedItem().equals("Computer");
-        String difficulty = (String)difficultyBox.getSelectedItem();
+        String player1Name = player1Field.getText().trim();
+        String player2Name = player2Field.getText().trim();
         
-        int gameType;
-        if (!player1IsComputer && !player2IsComputer)
-        {
-            gameType = GameConfig.HUMAN_HUMAN;
-        }
-        else if (!player1IsComputer && player2IsComputer)
-        {
-            gameType = GameConfig.HUMAN_COMPUTER;
-        }
-        else if (player1IsComputer && !player2IsComputer)
-        {
-            gameType = GameConfig.COMPUTER_HUMAN;
-        }
-        else
-        {
-            gameType = GameConfig.COMPUTER_COMPUTER;
-        }
+        if (player1Name.isEmpty()) player1Name = "Player 1";
+        if (player2Name.isEmpty()) player2Name = "Player 2";
         
         int difficultyLevel;
-        switch (difficulty)
+        switch ((String)difficultyBox.getSelectedItem())
         {
             case "Easy":
                 difficultyLevel = GameConfig.BEGINNER;
@@ -114,20 +128,14 @@ public class PlayerSelectionWindow extends JFrame
                 difficultyLevel = GameConfig.INTERMEDIATE;
         }
         
-        GameConfig config = new GameConfig(gameType, difficultyLevel);
+        GameConfig config = new GameConfig(GameConfig.HUMAN_HUMAN, difficultyLevel);
         GameController controller = new GameController(config);
         controller.setPlayerNames(player1Name, player2Name);
-        controller.setPlayerColors(player1Color, player2Color);
         
         GameView view = new GameView(controller);
         controller.setView(view);
         view.setVisible(true);
         
         dispose();
-    }
-    
-    public static void main(String[] args)
-    {
-        SwingUtilities.invokeLater(() -> new PlayerSelectionWindow().setVisible(true));
     }
 }
