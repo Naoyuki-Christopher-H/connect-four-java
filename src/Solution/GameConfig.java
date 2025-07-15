@@ -13,30 +13,21 @@ public final class GameConfig
         ADVANCED = 3,
         EXPERT = 4;
     
-    private int gameType;
-    private int difficultyLevel;
+    private final int gameType;
+    private final int difficultyLevel;
     
-    public GameConfig(int gameType, int difficultyLevel) throws IllegalArgumentException
-    {
-        setGameType(gameType);
-        setDifficulty(difficultyLevel);
-    }
-    
-    public void setGameType(int gameType) throws IllegalArgumentException
+    public GameConfig(int gameType, int difficultyLevel)
     {
         if (gameType < HUMAN_HUMAN || gameType > COMPUTER_COMPUTER)
         {
-            throw new IllegalArgumentException("Invalid game type: " + gameType);
+            throw new IllegalArgumentException("Invalid game type");
         }
-        this.gameType = gameType;
-    }
-    
-    public void setDifficulty(int difficultyLevel) throws IllegalArgumentException
-    {
         if (difficultyLevel < BEGINNER || difficultyLevel > EXPERT)
         {
-            throw new IllegalArgumentException("Invalid difficulty level: " + difficultyLevel);
+            throw new IllegalArgumentException("Invalid difficulty level");
         }
+        
+        this.gameType = gameType;
         this.difficultyLevel = difficultyLevel;
     }
     
@@ -52,6 +43,13 @@ public final class GameConfig
     
     public int getMaxDepth()
     {
-        return difficultyLevel << 1;
+        switch (difficultyLevel)
+        {
+            case BEGINNER: return 2;
+            case INTERMEDIATE: return 4;
+            case ADVANCED: return 6;
+            case EXPERT: return 8;
+            default: return 4;
+        }
     }
 }

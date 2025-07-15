@@ -6,6 +6,10 @@ public class GameController
     private final GameConfig config;
     private GameView view;
     private char currentPlayer;
+    private String player1Name = "Player 1";
+    private String player2Name = "Player 2";
+    private String player1Color = "Red";
+    private String player2Color = "Blue";
     
     public GameController(GameConfig config)
     {
@@ -17,6 +21,38 @@ public class GameController
     public void setView(GameView view)
     {
         this.view = view;
+    }
+    
+    public void setPlayerNames(String player1Name, String player2Name)
+    {
+        this.player1Name = player1Name;
+        this.player2Name = player2Name;
+    }
+    
+    public void setPlayerColors(String player1Color, String player2Color)
+    {
+        this.player1Color = player1Color;
+        this.player2Color = player2Color;
+    }
+    
+    public String getPlayer1Name()
+    {
+        return player1Name;
+    }
+    
+    public String getPlayer2Name()
+    {
+        return player2Name;
+    }
+    
+    public String getPlayer1Color()
+    {
+        return player1Color;
+    }
+    
+    public String getPlayer2Color()
+    {
+        return player2Color;
     }
     
     public GameModel getModel()
@@ -31,53 +67,39 @@ public class GameController
     
     public void startNewGame()
     {
-        try
-        {
-            model.reset();
-            currentPlayer = GameModel.RED;
-            view.updateBoard();
-        }
-        catch (Exception e)
-        {
-            view.showError("Failed to start new game: " + e.getMessage());
-        }
+        model.reset();
+        currentPlayer = GameModel.RED;
+        view.updateBoard();
     }
     
     public void makeMove(int column)
     {
-        try
+        if (model.isColumnFull(column))
         {
-            if (model.isColumnFull(column))
-            {
-                return;
-            }
-            
-            model.makeMove(column, currentPlayer);
-            view.updateBoard();
-            
-            char winner = model.checkWinner();
-            if (winner != GameModel.EMPTY)
-            {
-                view.showWinner(winner);
-                return;
-            }
-            
-            if (model.isBoardFull())
-            {
-                view.showTie();
-                return;
-            }
-            
-            switchPlayer();
-            
-            if (shouldComputerMove())
-            {
-                makeComputerMove();
-            }
+            return;
         }
-        catch (IllegalArgumentException e)
+        
+        model.makeMove(column, currentPlayer);
+        view.updateBoard();
+        
+        char winner = model.checkWinner();
+        if (winner != GameModel.EMPTY)
         {
-            view.showError("Failed to make move: " + e.getMessage());
+            view.showWinner(winner);
+            return;
+        }
+        
+        if (model.isBoardFull())
+        {
+            view.showTie();
+            return;
+        }
+        
+        switchPlayer();
+        
+        if (shouldComputerMove())
+        {
+            makeComputerMove();
         }
     }
     
@@ -96,15 +118,8 @@ public class GameController
     
     private void makeComputerMove()
     {
-        try
-        {
-            int column = findBestMove();
-            makeMove(column);
-        }
-        catch (Exception e)
-        {
-            view.showError("Computer failed to make move: " + e.getMessage());
-        }
+        int column = findBestMove();
+        makeMove(column);
     }
     
     private int findBestMove()

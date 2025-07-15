@@ -1,6 +1,6 @@
 package Solution;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 public class Solution
 {
@@ -8,19 +8,8 @@ public class Solution
     {
         SwingUtilities.invokeLater(() -> 
         {
-            try
-            {
-                GameConfig config = new GameConfig(GameConfig.HUMAN_COMPUTER, GameConfig.EXPERT);
-                GameController controller = new GameController(config);
-                GameView view = new GameView(controller);
-                controller.setView(view);
-                view.setVisible(true);
-            }
-            catch (Exception e)
-            {
-                System.err.println("Failed to initialize game: " + e.getMessage());
-                e.printStackTrace();
-            }
+            PlayerSelectionWindow selectionWindow = new PlayerSelectionWindow();
+            selectionWindow.setVisible(true);
         });
     }
 }
